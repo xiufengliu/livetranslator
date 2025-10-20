@@ -42,24 +42,24 @@ async function decodeAudioData(
 
 const LANGUAGE_PAIRS = [
   // Put Chinese (Simplified) → Danish first so it becomes the default
-  { name: 'Chinese (Simplified) → Danish', source: 'Chinese (Simplified)', target: 'Danish' },
+  { name: 'Chinese → Danish', source: 'Chinese', target: 'Danish' },
 
   // Chinese (Simplified) ⇄ major languages
-  { name: 'Chinese (Simplified) → English', source: 'Chinese (Simplified)', target: 'English' },
-  { name: 'English → Chinese (Simplified)', source: 'English', target: 'Chinese (Simplified)' },
-  { name: 'Danish → Chinese (Simplified)', source: 'Danish', target: 'Chinese (Simplified)' },
-  { name: 'Chinese (Simplified) → French', source: 'Chinese (Simplified)', target: 'French' },
-  { name: 'French → Chinese (Simplified)', source: 'French', target: 'Chinese (Simplified)' },
-  { name: 'Chinese (Simplified) → German', source: 'Chinese (Simplified)', target: 'German' },
-  { name: 'German → Chinese (Simplified)', source: 'German', target: 'Chinese (Simplified)' },
-  { name: 'Chinese (Simplified) → Spanish', source: 'Chinese (Simplified)', target: 'Spanish' },
-  { name: 'Spanish → Chinese (Simplified)', source: 'Spanish', target: 'Chinese (Simplified)' },
-  { name: 'Chinese (Simplified) → Portuguese', source: 'Chinese (Simplified)', target: 'Portuguese' },
-  { name: 'Portuguese → Chinese (Simplified)', source: 'Portuguese', target: 'Chinese (Simplified)' },
-  { name: 'Chinese (Simplified) → Japanese', source: 'Chinese (Simplified)', target: 'Japanese' },
-  { name: 'Japanese → Chinese (Simplified)', source: 'Japanese', target: 'Chinese (Simplified)' },
-  { name: 'Chinese (Simplified) → Korean', source: 'Chinese (Simplified)', target: 'Korean' },
-  { name: 'Korean → Chinese (Simplified)', source: 'Korean', target: 'Chinese (Simplified)' },
+  { name: 'Chinese → English', source: 'Chinese', target: 'English' },
+  { name: 'English → Chinese', source: 'English', target: 'Chinese' },
+  { name: 'Danish → Chinese', source: 'Danish', target: 'Chinese' },
+  { name: 'Chinese → French', source: 'Chinese', target: 'French' },
+  { name: 'French → Chinese', source: 'French', target: 'Chinese' },
+  { name: 'Chinese → German', source: 'Chinese', target: 'German' },
+  { name: 'German → Chinese', source: 'German', target: 'Chinese' },
+  { name: 'Chinese → Spanish', source: 'Chinese', target: 'Spanish' },
+  { name: 'Spanish → Chinese', source: 'Spanish', target: 'Chinese' },
+  { name: 'Chinese → Portuguese', source: 'Chinese', target: 'Portuguese' },
+  { name: 'Portuguese → Chinese', source: 'Portuguese', target: 'Chinese' },
+  { name: 'Chinese → Japanese', source: 'Chinese', target: 'Japanese' },
+  { name: 'Japanese → Chinese', source: 'Japanese', target: 'Chinese' },
+  { name: 'Chinese → Korean', source: 'Chinese', target: 'Korean' },
+  { name: 'Korean → Chinese', source: 'Korean', target: 'Chinese' },
 
   // English ⇄ major languages
   { name: 'English → Danish', source: 'English', target: 'Danish' },
@@ -782,16 +782,16 @@ const LiveTranslatorApp = () => {
                 {(() => {
                   const canonicalIndex = (idx: number) => {
                     const p = LANGUAGE_PAIRS[idx] ?? FALLBACK_PAIR;
-                    if (p.source === 'Chinese (Simplified)') return idx;
-                    if (p.source === 'English') {
-                      if (p.target === 'Chinese (Simplified)') {
-                        const rev = LANGUAGE_PAIRS.findIndex(
-                          (q) => q.source === 'Chinese (Simplified)' && q.target === 'English',
-                        );
-                        return rev !== -1 ? rev : idx;
+                  if (p.source === 'Chinese') return idx;
+                  if (p.source === 'English') {
+                      if (p.target === 'Chinese') {
+                          const rev = LANGUAGE_PAIRS.findIndex(
+                          (q) => q.source === 'Chinese' && q.target === 'English',
+                          );
+                          return rev !== -1 ? rev : idx;
                       }
                       return idx;
-                    }
+                  }
                     const rev = LANGUAGE_PAIRS.findIndex(
                       (q) => q.source === p.target && q.target === p.source,
                     );
@@ -800,8 +800,8 @@ const LiveTranslatorApp = () => {
                   const displayPairs = LANGUAGE_PAIRS.map((p, i) => ({ p, i }))
                     .filter(({ p }) =>
                       // Only show canonical directions, and avoid duplicate CN↔EN by hiding EN→CN in dropdown
-                      (p.source === 'Chinese (Simplified)' && p.target !== 'Chinese (Simplified)') ||
-                      (p.source === 'English' && p.target !== 'Chinese (Simplified)')
+                      (p.source === 'Chinese' && p.target !== 'Chinese') ||
+                      (p.source === 'English' && p.target !== 'Chinese')
                     );
                   return (
                     <select
