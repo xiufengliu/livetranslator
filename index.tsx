@@ -41,49 +41,49 @@ async function decodeAudioData(
 }
 
 const LANGUAGE_PAIRS = [
-  // 中文（简体） ⇄ 主要语言
-  { name: '中文（简体） → 英语', source: '中文（简体）', target: '英语' },
-  { name: '英语 → 中文（简体）', source: '英语', target: '中文（简体）' },
-  { name: '中文（简体） → 丹麦语', source: '中文（简体）', target: '丹麦语' },
-  { name: '丹麦语 → 中文（简体）', source: '丹麦语', target: '中文（简体）' },
-  { name: '中文（简体） → 法语', source: '中文（简体）', target: '法语' },
-  { name: '法语 → 中文（简体）', source: '法语', target: '中文（简体）' },
-  { name: '中文（简体） → 德语', source: '中文（简体）', target: '德语' },
-  { name: '德语 → 中文（简体）', source: '德语', target: '中文（简体）' },
-  { name: '中文（简体） → 西班牙语', source: '中文（简体）', target: '西班牙语' },
-  { name: '西班牙语 → 中文（简体）', source: '西班牙语', target: '中文（简体）' },
-  { name: '中文（简体） → 葡萄牙语', source: '中文（简体）', target: '葡萄牙语' },
-  { name: '葡萄牙语 → 中文（简体）', source: '葡萄牙语', target: '中文（简体）' },
-  { name: '中文（简体） → 意大利语', source: '中文（简体）', target: '意大利语' },
-  { name: '意大利语 → 中文（简体）', source: '意大利语', target: '中文（简体）' },
-  { name: '中文（简体） → 日语', source: '中文（简体）', target: '日语' },
-  { name: '日语 → 中文（简体）', source: '日语', target: '中文（简体）' },
-  { name: '中文（简体） → 韩语', source: '中文（简体）', target: '韩语' },
-  { name: '韩语 → 中文（简体）', source: '韩语', target: '中文（简体）' },
-  { name: '中文（简体） → 俄语', source: '中文（简体）', target: '俄语' },
-  { name: '俄语 → 中文（简体）', source: '俄语', target: '中文（简体）' },
-  { name: '中文（简体） → 阿拉伯语', source: '中文（简体）', target: '阿拉伯语' },
-  { name: '阿拉伯语 → 中文（简体）', source: '阿拉伯语', target: '中文（简体）' },
-  { name: '中文（简体） → 印地语', source: '中文（简体）', target: '印地语' },
-  { name: '印地语 → 中文（简体）', source: '印地语', target: '中文（简体）' },
-  { name: '中文（简体） → 泰语', source: '中文（简体）', target: '泰语' },
-  { name: '泰语 → 中文（简体）', source: '泰语', target: '中文（简体）' },
-  { name: '中文（简体） → 越南语', source: '中文（简体）', target: '越南语' },
-  { name: '越南语 → 中文（简体）', source: '越南语', target: '中文（简体）' },
-  { name: '中文（简体） → 印度尼西亚语', source: '中文（简体）', target: '印度尼西亚语' },
-  { name: '印度尼西亚语 → 中文（简体）', source: '印度尼西亚语', target: '中文（简体）' },
-  { name: '中文（简体） → 土耳其语', source: '中文（简体）', target: '土耳其语' },
-  { name: '土耳其语 → 中文（简体）', source: '土耳其语', target: '中文（简体）' },
-  { name: '中文（简体） → 荷兰语', source: '中文（简体）', target: '荷兰语' },
-  { name: '荷兰语 → 中文（简体）', source: '荷兰语', target: '中文（简体）' },
-  { name: '中文（简体） → 波兰语', source: '中文（简体）', target: '波兰语' },
-  { name: '波兰语 → 中文（简体）', source: '波兰语', target: '中文（简体）' },
-  { name: '中文（简体） → 瑞典语', source: '中文（简体）', target: '瑞典语' },
-  { name: '瑞典语 → 中文（简体）', source: '瑞典语', target: '中文（简体）' },
-  { name: '中文（简体） → 挪威语', source: '中文（简体）', target: '挪威语' },
-  { name: '挪威语 → 中文（简体）', source: '挪威语', target: '中文（简体）' },
-  { name: '中文（简体） → 芬兰语', source: '中文（简体）', target: '芬兰语' },
-  { name: '芬兰语 → 中文（简体）', source: '芬兰语', target: '中文（简体）' },
+  // Chinese (Simplified) ⇄ major languages
+  { name: 'Chinese (Simplified) → English', source: 'Chinese (Simplified)', target: 'English' },
+  { name: 'English → Chinese (Simplified)', source: 'English', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Danish', source: 'Chinese (Simplified)', target: 'Danish' },
+  { name: 'Danish → Chinese (Simplified)', source: 'Danish', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → French', source: 'Chinese (Simplified)', target: 'French' },
+  { name: 'French → Chinese (Simplified)', source: 'French', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → German', source: 'Chinese (Simplified)', target: 'German' },
+  { name: 'German → Chinese (Simplified)', source: 'German', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Spanish', source: 'Chinese (Simplified)', target: 'Spanish' },
+  { name: 'Spanish → Chinese (Simplified)', source: 'Spanish', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Portuguese', source: 'Chinese (Simplified)', target: 'Portuguese' },
+  { name: 'Portuguese → Chinese (Simplified)', source: 'Portuguese', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Italian', source: 'Chinese (Simplified)', target: 'Italian' },
+  { name: 'Italian → Chinese (Simplified)', source: 'Italian', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Japanese', source: 'Chinese (Simplified)', target: 'Japanese' },
+  { name: 'Japanese → Chinese (Simplified)', source: 'Japanese', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Korean', source: 'Chinese (Simplified)', target: 'Korean' },
+  { name: 'Korean → Chinese (Simplified)', source: 'Korean', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Russian', source: 'Chinese (Simplified)', target: 'Russian' },
+  { name: 'Russian → Chinese (Simplified)', source: 'Russian', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Arabic', source: 'Chinese (Simplified)', target: 'Arabic' },
+  { name: 'Arabic → Chinese (Simplified)', source: 'Arabic', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Hindi', source: 'Chinese (Simplified)', target: 'Hindi' },
+  { name: 'Hindi → Chinese (Simplified)', source: 'Hindi', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Thai', source: 'Chinese (Simplified)', target: 'Thai' },
+  { name: 'Thai → Chinese (Simplified)', source: 'Thai', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Vietnamese', source: 'Chinese (Simplified)', target: 'Vietnamese' },
+  { name: 'Vietnamese → Chinese (Simplified)', source: 'Vietnamese', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Indonesian', source: 'Chinese (Simplified)', target: 'Indonesian' },
+  { name: 'Indonesian → Chinese (Simplified)', source: 'Indonesian', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Turkish', source: 'Chinese (Simplified)', target: 'Turkish' },
+  { name: 'Turkish → Chinese (Simplified)', source: 'Turkish', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Dutch', source: 'Chinese (Simplified)', target: 'Dutch' },
+  { name: 'Dutch → Chinese (Simplified)', source: 'Dutch', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Polish', source: 'Chinese (Simplified)', target: 'Polish' },
+  { name: 'Polish → Chinese (Simplified)', source: 'Polish', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Swedish', source: 'Chinese (Simplified)', target: 'Swedish' },
+  { name: 'Swedish → Chinese (Simplified)', source: 'Swedish', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Norwegian', source: 'Chinese (Simplified)', target: 'Norwegian' },
+  { name: 'Norwegian → Chinese (Simplified)', source: 'Norwegian', target: 'Chinese (Simplified)' },
+  { name: 'Chinese (Simplified) → Finnish', source: 'Chinese (Simplified)', target: 'Finnish' },
+  { name: 'Finnish → Chinese (Simplified)', source: 'Finnish', target: 'Chinese (Simplified)' },
 ];
 
 const FALLBACK_PAIR = LANGUAGE_PAIRS[0];
@@ -387,7 +387,8 @@ const LiveTranslatorApp = () => {
           : paceRef.current === 'fast'
           ? 'Speak a bit faster while remaining clear.'
           : 'Use a natural speaking pace.';
-      const systemInstruction = `You are an expert simultaneous interpreter. The user will speak to you in ${pair.source}. Your task is to listen to the user and provide a real-time, accurate translation in ${pair.target}. ONLY output the translation. Do not add any extra commentary, greetings, or explanations. Your response must be the direct translation of the user's speech. ${paceHint}`;
+      const chineseSimplifiedNote = 'If the target language is Chinese, write in Simplified Chinese characters (简体中文), not Traditional.';
+      const systemInstruction = `You are an expert simultaneous interpreter. The user will speak to you in ${pair.source}. Your task is to listen to the user and provide a real-time, accurate translation in ${pair.target}. ONLY output the translation. Do not add any extra commentary, greetings, or explanations. Your response must be the direct translation of the user's speech. ${paceHint} ${chineseSimplifiedNote}`;
 
       const OutputContextCtor = window.AudioContext || (window as any).webkitAudioContext;
       const outputAudioContext = new OutputContextCtor({ sampleRate: 24000 });
@@ -588,13 +589,13 @@ const LiveTranslatorApp = () => {
   }, [selectedPairIndex, stopRecording]);
 
   const statusLabel =
-    status === 'listening' ? '正在听' : status === 'connecting' ? '正在连接…' : '麦克风已关闭';
+    status === 'listening' ? 'Listening' : status === 'connecting' ? 'Connecting…' : 'Microphone off';
   const statusHint =
     status === 'listening'
-      ? '同声传译已就绪，请开始说话。'
+      ? 'Interpreter is live. Speak to translate instantly.'
       : status === 'connecting'
-      ? '正在建立音频连接…'
-      : `点击麦克风，进行从 ${selectedPair.source} 到 ${selectedPair.target} 的口译。`;
+      ? 'Establishing a secure audio channel…'
+      : `Tap the microphone to interpret from ${selectedPair.source} to ${selectedPair.target}.`;
 
   const micButtonClass = [
     'mic-button',
@@ -628,8 +629,8 @@ const LiveTranslatorApp = () => {
           </svg>
         </button>
         <div className="title-stack">
-          <h1>同声传译</h1>
-          <p className="title-subtitle">基于 Gemini 的实时口译</p>
+          <h1>Live Translator</h1>
+          <p className="title-subtitle">Real-time interpreter powered by Gemini</p>
         </div>
         <button
           className="maximize-button"
@@ -706,11 +707,11 @@ const LiveTranslatorApp = () => {
                 <line x1="12" x2="12" y1="19" y2="22" />
               </svg>
             </div>
-            <p className="placeholder-title">暂无翻译记录</p>
+            <p className="placeholder-title">No translations yet</p>
             <p className="placeholder-copy">
               {status === 'idle'
-                ? `点击麦克风即可从 ${selectedPair.source} 到 ${selectedPair.target} 进行口译。`
-                : '已准备就绪，开始说话即可在此看到翻译结果。'}
+                ? `Press the microphone to interpret from ${selectedPair.source} to ${selectedPair.target}.`
+                : 'We are ready—start speaking to see your translations appear here.'}
             </p>
           </div>
         ) : (
@@ -744,7 +745,7 @@ const LiveTranslatorApp = () => {
         <button
           className={micButtonClass}
           onClick={status === 'idle' ? startRecording : () => stopRecording()}
-          aria-label={status === 'idle' ? '开始口译' : '停止口译'}
+          aria-label={status === 'idle' ? 'Start translation' : 'Stop translation'}
         >
           {status === 'idle' ? (
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
@@ -764,7 +765,7 @@ const LiveTranslatorApp = () => {
             onClick={clearTranscript}
             disabled={transcript.length === 0}
           >
-            清空记录
+            Clear transcript
           </button>
         </div>
       </div>
@@ -772,9 +773,9 @@ const LiveTranslatorApp = () => {
       {isSettingsOpen && (
         <div className="settings-modal-overlay" onClick={() => setIsSettingsOpen(false)}>
           <div className="settings-modal" onClick={(event) => event.stopPropagation()}>
-            <h2>设置</h2>
+            <h2>Settings</h2>
             <div className="setting-item">
-              <label htmlFor="language-pair">翻译语言</label>
+              <label htmlFor="language-pair">Translate</label>
               <select
                 id="language-pair"
                 value={selectedPairIndex}
@@ -788,15 +789,15 @@ const LiveTranslatorApp = () => {
               </select>
             </div>
             <div className="setting-item">
-              <label htmlFor="speech-pace">语速</label>
+              <label htmlFor="speech-pace">Speech pace</label>
               <select
                 id="speech-pace"
                 value={pace}
                 onChange={(e) => setPace((e.target.value as 'slow'|'normal'|'fast'))}
               >
-                <option value="slow">慢</option>
-                <option value="normal">正常</option>
-                <option value="fast">快</option>
+                <option value="slow">Slow</option>
+                <option value="normal">Normal</option>
+                <option value="fast">Fast</option>
               </select>
             </div>
             <div className="setting-item">
@@ -805,7 +806,7 @@ const LiveTranslatorApp = () => {
               </button>
             </div>
             <button className="close-settings" onClick={() => setIsSettingsOpen(false)}>
-              完成
+              Done
             </button>
           </div>
         </div>
