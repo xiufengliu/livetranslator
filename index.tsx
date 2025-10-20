@@ -790,11 +790,7 @@ const LiveTranslatorApp = () => {
                     </option>
                   ))}
                 </select>
-                <div className="pair-preview" aria-live="polite">
-                  <span className="pair-badge">{selectedPair.source}</span>
-                  <span className="pair-arrow" aria-hidden="true">↔</span>
-                  <span className="pair-badge">{selectedPair.target}</span>
-                </div>
+                {/* pair-preview removed as it's no longer needed */}
               </div>
             </div>
             <div className="setting-item">
