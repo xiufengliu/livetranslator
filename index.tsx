@@ -41,10 +41,12 @@ async function decodeAudioData(
 }
 
 const LANGUAGE_PAIRS = [
+  // Put Chinese (Simplified) → Danish first so it becomes the default
+  { name: 'Chinese (Simplified) → Danish', source: 'Chinese (Simplified)', target: 'Danish' },
+
   // Chinese (Simplified) ⇄ major languages
   { name: 'Chinese (Simplified) → English', source: 'Chinese (Simplified)', target: 'English' },
   { name: 'English → Chinese (Simplified)', source: 'English', target: 'Chinese (Simplified)' },
-  { name: 'Chinese (Simplified) → Danish', source: 'Chinese (Simplified)', target: 'Danish' },
   { name: 'Danish → Chinese (Simplified)', source: 'Danish', target: 'Chinese (Simplified)' },
   { name: 'Chinese (Simplified) → French', source: 'Chinese (Simplified)', target: 'French' },
   { name: 'French → Chinese (Simplified)', source: 'French', target: 'Chinese (Simplified)' },
@@ -59,7 +61,7 @@ const LANGUAGE_PAIRS = [
   { name: 'Chinese (Simplified) → Korean', source: 'Chinese (Simplified)', target: 'Korean' },
   { name: 'Korean → Chinese (Simplified)', source: 'Korean', target: 'Chinese (Simplified)' },
 
-  // English ⇄ major languages (keep English pairs with others)
+  // English ⇄ major languages
   { name: 'English → Danish', source: 'English', target: 'Danish' },
   { name: 'Danish → English', source: 'Danish', target: 'English' },
   { name: 'English → French', source: 'English', target: 'French' },
@@ -777,17 +779,31 @@ const LiveTranslatorApp = () => {
             <div className="setting-item">
               <label htmlFor="language-pair">Translate</label>
               <div className="pair-row">
-                <select
-                  id="language-pair"
-                  value={selectedPairIndex}
-                  onChange={(event) => handlePairChange(Number.parseInt(event.target.value, 10))}
-                >
-                  {LANGUAGE_PAIRS.map((pair, index) => (
-                    <option key={pair.name} value={index}>
-                      {pair.name}
-                    </option>
-                  ))}
-                </select>
+                {(() => {
+                  const canonicalIndex = (idx: number) => {
+                    const p = LANGUAGE_PAIRS[idx] ?? FALLBACK_PAIR;
+                    if (p.source === 'Chinese (Simplified)' || p.source === 'English') return idx;
+                    const rev = LANGUAGE_PAIRS.findIndex(
+                      (q) => q.source === p.target && q.target === p.source,
+                    );
+                    return rev !== -1 ? rev : idx;
+                  };
+                  const displayPairs = LANGUAGE_PAIRS.map((p, i) => ({ p, i }))
+                    .filter(({ p }) => p.source === 'Chinese (Simplified)' || p.source === 'English');
+                  return (
+                    <select
+                      id="language-pair"
+                      value={canonicalIndex(selectedPairIndex)}
+                      onChange={(event) => handlePairChange(Number.parseInt(event.target.value, 10))}
+                    >
+                      {displayPairs.map(({ p, i }) => (
+                        <option key={p.name} value={i}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                  );
+                })()}
                 <button type="button" className="swap-button" onClick={swapPairDirection} aria-label="Swap direction">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="17 1 21 5 17 9" />
