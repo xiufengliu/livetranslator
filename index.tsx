@@ -782,14 +782,27 @@ const LiveTranslatorApp = () => {
                 {(() => {
                   const canonicalIndex = (idx: number) => {
                     const p = LANGUAGE_PAIRS[idx] ?? FALLBACK_PAIR;
-                    if (p.source === 'Chinese (Simplified)' || p.source === 'English') return idx;
+                    if (p.source === 'Chinese (Simplified)') return idx;
+                    if (p.source === 'English') {
+                      if (p.target === 'Chinese (Simplified)') {
+                        const rev = LANGUAGE_PAIRS.findIndex(
+                          (q) => q.source === 'Chinese (Simplified)' && q.target === 'English',
+                        );
+                        return rev !== -1 ? rev : idx;
+                      }
+                      return idx;
+                    }
                     const rev = LANGUAGE_PAIRS.findIndex(
                       (q) => q.source === p.target && q.target === p.source,
                     );
                     return rev !== -1 ? rev : idx;
                   };
                   const displayPairs = LANGUAGE_PAIRS.map((p, i) => ({ p, i }))
-                    .filter(({ p }) => p.source === 'Chinese (Simplified)' || p.source === 'English');
+                    .filter(({ p }) =>
+                      // Only show canonical directions, and avoid duplicate CN↔EN by hiding EN→CN in dropdown
+                      (p.source === 'Chinese (Simplified)' && p.target !== 'Chinese (Simplified)') ||
+                      (p.source === 'English' && p.target !== 'Chinese (Simplified)')
+                    );
                   return (
                     <select
                       id="language-pair"
