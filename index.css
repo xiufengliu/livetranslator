@@ -139,6 +139,20 @@ h1 {
   color: var(--primary-color);
 }
 
+/* Make the settings (gear) button more prominent */
+.settings-button {
+  background-color: rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.28);
+  color: var(--primary-color);
+  padding: 0.7rem;
+  box-shadow: 0 6px 14px rgba(99, 102, 241, 0.18);
+}
+.settings-button:hover {
+  background-color: rgba(99, 102, 241, 0.18);
+  border-color: rgba(99, 102, 241, 0.38);
+  color: var(--primary-hover-color);
+}
+
 .status-bar {
   display: flex;
   align-items: center;
@@ -331,9 +345,10 @@ h1 {
 
 .controls {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
+  justify-content: center;
+  gap: 1.1rem;
   padding-top: 0.5rem;
 }
 
@@ -341,7 +356,9 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
-  flex: 1;
+  flex: 0 0 auto;
+  align-items: center;
+  text-align: center;
 }
 
 .control-heading {
@@ -357,7 +374,7 @@ h1 {
 }
 
 .secondary-button {
-  align-self: flex-start;
+  align-self: center;
   padding: 0.55rem 1rem;
   border-radius: 999px;
   border: 1px solid var(--border-color);
