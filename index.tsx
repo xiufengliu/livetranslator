@@ -782,16 +782,16 @@ const LiveTranslatorApp = () => {
                 {(() => {
                   const canonicalIndex = (idx: number) => {
                     const p = LANGUAGE_PAIRS[idx] ?? FALLBACK_PAIR;
-                  if (p.source === 'Chinese') return idx;
-                  if (p.source === 'English') {
+                    if (p.source === 'Chinese') return idx;
+                    if (p.source === 'English') {
                       if (p.target === 'Chinese') {
-                          const rev = LANGUAGE_PAIRS.findIndex(
+                        const rev = LANGUAGE_PAIRS.findIndex(
                           (q) => q.source === 'Chinese' && q.target === 'English',
-                          );
-                          return rev !== -1 ? rev : idx;
+                        );
+                        return rev !== -1 ? rev : idx;
                       }
                       return idx;
-                  }
+                    }
                     const rev = LANGUAGE_PAIRS.findIndex(
                       (q) => q.source === p.target && q.target === p.source,
                     );
@@ -817,6 +817,9 @@ const LiveTranslatorApp = () => {
                     </select>
                   );
                 })()}
+                <div className="pair-preview" aria-live="polite">
+                  {selectedPair.source} → {selectedPair.target}
+                </div>
                 <button type="button" className="swap-button" onClick={swapPairDirection} aria-label="Swap direction">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="17 1 21 5 17 9" />

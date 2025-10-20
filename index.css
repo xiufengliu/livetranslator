@@ -491,9 +491,15 @@ h1 {
 
 .pair-row {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr auto auto;
   gap: 0.5rem;
   align-items: center;
+}
+
+.pair-preview {
+  font-size: 0.9rem;
+  color: var(--text-color-muted);
+  white-space: nowrap;
 }
 
 .swap-button {
