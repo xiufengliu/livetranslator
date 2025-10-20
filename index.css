@@ -489,10 +489,7 @@ h1 {
   transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
 }
 
-.setting-item input[type='range'] {
-  width: 100%;
-  cursor: pointer;
-}
+/* pace uses a select; range styles removed */
 
 .setting-item select {
   appearance: none;

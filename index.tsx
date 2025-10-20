@@ -139,15 +139,17 @@ const LiveTranslatorApp = () => {
   const isRecordingRef = useRef(false);
   const statusRef = useRef<'idle' | 'connecting' | 'listening'>('idle');
   const isMountedRef = useRef(true);
-  const SPEECH_RATE_KEY = 'speechRate';
-  const [speechRate, setSpeechRate] = useState<number>(() => {
-    const saved = localStorage.getItem(SPEECH_RATE_KEY);
-    const parsed = saved ? Number.parseFloat(saved) : 1.0;
-    if (!Number.isFinite(parsed)) return 1.0;
-    return Math.min(Math.max(parsed, 0.5), 1.5);
+  // Discrete speech pace control: slow | normal | fast
+  type Pace = 'slow' | 'normal' | 'fast';
+  const SPEECH_PACE_KEY = 'speechPace';
+  const [pace, setPace] = useState<Pace>(() => {
+    const saved = localStorage.getItem(SPEECH_PACE_KEY);
+    return saved === 'slow' || saved === 'fast' || saved === 'normal' ? (saved as Pace) : 'normal';
   });
-  const speechRateRef = useRef<number>(1.0);
-  speechRateRef.current = speechRate;
+  const paceRef = useRef<Pace>(pace);
+  useEffect(() => {
+    paceRef.current = pace;
+  }, [pace]);
 
   // Keep the screen awake while recording so the OS doesn't lock
   const wakeLockRef = useRef<any>(null);
@@ -194,10 +196,9 @@ const LiveTranslatorApp = () => {
   useEffect(() => {
     localStorage.setItem(LANGUAGE_PAIR_KEY, selectedPairIndex.toString());
   }, [selectedPairIndex]);
-
   useEffect(() => {
-    localStorage.setItem(SPEECH_RATE_KEY, String(speechRate));
-  }, [speechRate]);
+    localStorage.setItem(SPEECH_PACE_KEY, pace);
+  }, [pace]);
 
   useEffect(() => {
     if (isMaximized || isSettingsOpen) {
@@ -358,9 +359,9 @@ const LiveTranslatorApp = () => {
 
       const pair = LANGUAGE_PAIRS[selectedPairIndex] ?? FALLBACK_PAIR;
       const paceHint =
-        (speechRateRef.current || 1) < 0.9
+        paceRef.current === 'slow'
           ? 'Speak slowly and clearly to aid comprehension.'
-          : (speechRateRef.current || 1) > 1.1
+          : paceRef.current === 'fast'
           ? 'Speak a bit faster while remaining clear.'
           : 'Use a natural speaking pace.';
       const systemInstruction = `You are an expert simultaneous interpreter. The user will speak to you in ${pair.source}. Your task is to listen to the user and provide a real-time, accurate translation in ${pair.target}. ONLY output the translation. Do not add any extra commentary, greetings, or explanations. Your response must be the direct translation of the user's speech. ${paceHint}`;
@@ -764,16 +765,16 @@ const LiveTranslatorApp = () => {
               </select>
             </div>
             <div className="setting-item">
-              <label htmlFor="speech-rate">Speech speed: {speechRate.toFixed(2)}x</label>
-              <input
-                id="speech-rate"
-                type="range"
-                min="0.5"
-                max="1.5"
-                step="0.05"
-                value={speechRate}
-                onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
-              />
+              <label htmlFor="speech-pace">Speech pace</label>
+              <select
+                id="speech-pace"
+                value={pace}
+                onChange={(e) => setPace((e.target.value as 'slow'|'normal'|'fast'))}
+              >
+                <option value="slow">Slow</option>
+                <option value="normal">Normal</option>
+                <option value="fast">Fast</option>
+              </select>
             </div>
             <div className="setting-item">
               <button className="clear-button" onClick={clearTranscript}>
