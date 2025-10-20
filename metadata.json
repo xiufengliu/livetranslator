@@ -1,0 +1,7 @@
+{
+  "name": "LiveTranslator",
+  "description": "Simultaneous translation app built with Gemini",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

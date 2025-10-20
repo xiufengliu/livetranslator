@@ -1,0 +1,21 @@
+{
+  "short_name": "Live Translator",
+  "name": "Live Translator",
+  "description": "Real-time simultaneous translation powered by Gemini.",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4285f4",
+  "background_color": "#f8f9fa"
+}
