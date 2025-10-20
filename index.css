@@ -489,6 +489,11 @@ h1 {
   transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
 }
 
+.setting-item input[type='range'] {
+  width: 100%;
+  cursor: pointer;
+}
+
 .setting-item select {
   appearance: none;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%236366f1' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.6' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");

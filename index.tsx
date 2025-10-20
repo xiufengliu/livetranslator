@@ -139,6 +139,15 @@ const LiveTranslatorApp = () => {
   const isRecordingRef = useRef(false);
   const statusRef = useRef<'idle' | 'connecting' | 'listening'>('idle');
   const isMountedRef = useRef(true);
+  const SPEECH_RATE_KEY = 'speechRate';
+  const [speechRate, setSpeechRate] = useState<number>(() => {
+    const saved = localStorage.getItem(SPEECH_RATE_KEY);
+    const parsed = saved ? Number.parseFloat(saved) : 1.0;
+    if (!Number.isFinite(parsed)) return 1.0;
+    return Math.min(Math.max(parsed, 0.5), 1.5);
+  });
+  const speechRateRef = useRef<number>(1.0);
+  speechRateRef.current = speechRate;
 
   // Keep the screen awake while recording so the OS doesn't lock
   const wakeLockRef = useRef<any>(null);
@@ -185,6 +194,10 @@ const LiveTranslatorApp = () => {
   useEffect(() => {
     localStorage.setItem(LANGUAGE_PAIR_KEY, selectedPairIndex.toString());
   }, [selectedPairIndex]);
+
+  useEffect(() => {
+    localStorage.setItem(SPEECH_RATE_KEY, String(speechRate));
+  }, [speechRate]);
 
   useEffect(() => {
     if (isMaximized || isSettingsOpen) {
@@ -421,6 +434,9 @@ const LiveTranslatorApp = () => {
                   const source = outputCtx.createBufferSource();
                   source.buffer = buffer;
                   source.connect(outputNode);
+                  try {
+                    source.playbackRate.value = speechRateRef.current || 1.0;
+                  } catch (_) {}
 
                   const startAt = Math.max(nextOutputStartTimeRef.current, outputCtx.currentTime);
                   source.start(startAt);
@@ -743,6 +759,18 @@ const LiveTranslatorApp = () => {
                   </option>
                 ))}
               </select>
+            </div>
+            <div className="setting-item">
+              <label htmlFor="speech-rate">Speech speed: {speechRate.toFixed(2)}x</label>
+              <input
+                id="speech-rate"
+                type="range"
+                min="0.5"
+                max="1.5"
+                step="0.05"
+                value={speechRate}
+                onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
+              />
             </div>
             <div className="setting-item">
               <button className="clear-button" onClick={clearTranscript}>
