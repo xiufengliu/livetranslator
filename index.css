@@ -489,6 +489,35 @@ h1 {
   transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
 }
 
+.pair-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.swap-button {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease,
+    color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.swap-button:hover {
+  background-color: rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
 /* pace uses a select; range styles removed */
 
 .setting-item select {

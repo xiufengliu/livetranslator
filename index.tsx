@@ -358,6 +358,16 @@ const LiveTranslatorApp = () => {
     [selectedPairIndex, stopRecording],
   );
 
+  const swapPairDirection = useCallback(() => {
+    const current = LANGUAGE_PAIRS[selectedPairIndex] ?? FALLBACK_PAIR;
+    const swappedIndex = LANGUAGE_PAIRS.findIndex(
+      (p) => p.source === current.target && p.target === current.source,
+    );
+    if (swappedIndex !== -1) {
+      handlePairChange(swappedIndex);
+    }
+  }, [selectedPairIndex, handlePairChange]);
+
   const startRecording = useCallback(async () => {
     if (isRecordingRef.current || sessionPromiseRef.current) {
       return;
@@ -766,17 +776,27 @@ const LiveTranslatorApp = () => {
             <h2>Settings</h2>
             <div className="setting-item">
               <label htmlFor="language-pair">Translate</label>
-              <select
-                id="language-pair"
-                value={selectedPairIndex}
-                onChange={(event) => handlePairChange(Number.parseInt(event.target.value, 10))}
-              >
-                {LANGUAGE_PAIRS.map((pair, index) => (
-                  <option key={pair.name} value={index}>
-                    {pair.name}
-                  </option>
-                ))}
-              </select>
+              <div className="pair-row">
+                <select
+                  id="language-pair"
+                  value={selectedPairIndex}
+                  onChange={(event) => handlePairChange(Number.parseInt(event.target.value, 10))}
+                >
+                  {LANGUAGE_PAIRS.map((pair, index) => (
+                    <option key={pair.name} value={index}>
+                      {pair.name}
+                    </option>
+                  ))}
+                </select>
+                <button type="button" className="swap-button" onClick={swapPairDirection} aria-label="Swap direction">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="17 1 21 5 17 9" />
+                    <line x1="3" y1="5" x2="21" y2="5" />
+                    <polyline points="7 15 3 19 7 23" />
+                    <line x1="3" y1="19" x2="21" y2="19" />
+                  </svg>
+                </button>
+              </div>
             </div>
             <div className="setting-item">
               <label htmlFor="speech-pace">Speech pace</label>
