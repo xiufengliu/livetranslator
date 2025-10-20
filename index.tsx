@@ -41,41 +41,23 @@ async function decodeAudioData(
 }
 
 const LANGUAGE_PAIRS = [
-  // Put Chinese (Simplified) → Danish first so it becomes the default
-  { name: 'Chinese → Danish', source: 'Chinese', target: 'Danish' },
+  // Use bidirectional pairs; the "source" and "target" here represent Lang A and Lang B.
+  { name: 'Chinese ↔ Danish', source: 'Chinese', target: 'Danish' },
+  { name: 'Chinese ↔ English', source: 'Chinese', target: 'English' },
+  { name: 'Chinese ↔ French', source: 'Chinese', target: 'French' },
+  { name: 'Chinese ↔ German', source: 'Chinese', target: 'German' },
+  { name: 'Chinese ↔ Spanish', source: 'Chinese', target: 'Spanish' },
+  { name: 'Chinese ↔ Portuguese', source: 'Chinese', target: 'Portuguese' },
+  { name: 'Chinese ↔ Japanese', source: 'Chinese', target: 'Japanese' },
+  { name: 'Chinese ↔ Korean', source: 'Chinese', target: 'Korean' },
 
-  // Chinese (Simplified) ⇄ major languages
-  { name: 'Chinese → English', source: 'Chinese', target: 'English' },
-  { name: 'English → Chinese', source: 'English', target: 'Chinese' },
-  { name: 'Danish → Chinese', source: 'Danish', target: 'Chinese' },
-  { name: 'Chinese → French', source: 'Chinese', target: 'French' },
-  { name: 'French → Chinese', source: 'French', target: 'Chinese' },
-  { name: 'Chinese → German', source: 'Chinese', target: 'German' },
-  { name: 'German → Chinese', source: 'German', target: 'Chinese' },
-  { name: 'Chinese → Spanish', source: 'Chinese', target: 'Spanish' },
-  { name: 'Spanish → Chinese', source: 'Spanish', target: 'Chinese' },
-  { name: 'Chinese → Portuguese', source: 'Chinese', target: 'Portuguese' },
-  { name: 'Portuguese → Chinese', source: 'Portuguese', target: 'Chinese' },
-  { name: 'Chinese → Japanese', source: 'Chinese', target: 'Japanese' },
-  { name: 'Japanese → Chinese', source: 'Japanese', target: 'Chinese' },
-  { name: 'Chinese → Korean', source: 'Chinese', target: 'Korean' },
-  { name: 'Korean → Chinese', source: 'Korean', target: 'Chinese' },
-
-  // English ⇄ major languages
-  { name: 'English → Danish', source: 'English', target: 'Danish' },
-  { name: 'Danish → English', source: 'Danish', target: 'English' },
-  { name: 'English → French', source: 'English', target: 'French' },
-  { name: 'French → English', source: 'French', target: 'English' },
-  { name: 'English → German', source: 'English', target: 'German' },
-  { name: 'German → English', source: 'German', target: 'English' },
-  { name: 'English → Spanish', source: 'English', target: 'Spanish' },
-  { name: 'Spanish → English', source: 'Spanish', target: 'English' },
-  { name: 'English → Portuguese', source: 'English', target: 'Portuguese' },
-  { name: 'Portuguese → English', source: 'Portuguese', target: 'English' },
-  { name: 'English → Japanese', source: 'English', target: 'Japanese' },
-  { name: 'Japanese → English', source: 'Japanese', target: 'English' },
-  { name: 'English → Korean', source: 'English', target: 'Korean' },
-  { name: 'Korean → English', source: 'Korean', target: 'English' },
+  { name: 'English ↔ Danish', source: 'English', target: 'Danish' },
+  { name: 'English ↔ French', source: 'English', target: 'French' },
+  { name: 'English ↔ German', source: 'English', target: 'German' },
+  { name: 'English ↔ Spanish', source: 'English', target: 'Spanish' },
+  { name: 'English ↔ Portuguese', source: 'English', target: 'Portuguese' },
+  { name: 'English ↔ Japanese', source: 'English', target: 'Japanese' },
+  { name: 'English ↔ Korean', source: 'English', target: 'Korean' },
 ];
 
 const FALLBACK_PAIR = LANGUAGE_PAIRS[0];
@@ -360,15 +342,30 @@ const LiveTranslatorApp = () => {
     [selectedPairIndex, stopRecording],
   );
 
-  const swapPairDirection = useCallback(() => {
-    const current = LANGUAGE_PAIRS[selectedPairIndex] ?? FALLBACK_PAIR;
-    const swappedIndex = LANGUAGE_PAIRS.findIndex(
-      (p) => p.source === current.target && p.target === current.source,
-    );
-    if (swappedIndex !== -1) {
-      handlePairChange(swappedIndex);
+  // Bidirectional translation: detect which of the two languages is spoken and translate to the other.
+  const detectLanguageOfText = useCallback((text: string, langA: string, langB: string): 'A' | 'B' | 'unknown' => {
+    const t = text || '';
+    // Basic Unicode heuristics for CJK detection
+    const hasHan = /[\p{Script=Han}]/u.test(t);
+    const hasHiraganaKatakana = /[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(t);
+    const hasHangul = /[\p{Script=Hangul}]/u.test(t);
+    if (langA === 'Chinese' || langB === 'Chinese') {
+      if (hasHan) return langA === 'Chinese' ? 'A' : 'B';
     }
-  }, [selectedPairIndex, handlePairChange]);
+    if (langA === 'Japanese' || langB === 'Japanese') {
+      if (hasHiraganaKatakana || (hasHan && (langA === 'Japanese' || langB === 'Japanese'))) return langA === 'Japanese' ? 'A' : 'B';
+    }
+    if (langA === 'Korean' || langB === 'Korean') {
+      if (hasHangul) return langA === 'Korean' ? 'A' : 'B';
+    }
+    // If strongly ASCII, prefer English/Latin if present
+    const isMostlyAscii = /^[\p{ASCII}\p{M}\s\p{P}]*$/u.test(t);
+    if (isMostlyAscii) {
+      if (langA === 'English') return 'A';
+      if (langB === 'English') return 'B';
+    }
+    return 'unknown';
+  }, []);
 
   const startRecording = useCallback(async () => {
     if (isRecordingRef.current || sessionPromiseRef.current) {
@@ -389,8 +386,8 @@ const LiveTranslatorApp = () => {
           : paceRef.current === 'fast'
           ? 'Speak a bit faster while remaining clear.'
           : 'Use a natural speaking pace.';
-      const chineseSimplifiedNote = 'If the target language is Chinese, write in Simplified Chinese characters (简体中文), not Traditional.';
-      const systemInstruction = `You are an expert simultaneous interpreter. The user will speak to you in ${pair.source}. Your task is to listen to the user and provide a real-time, accurate translation in ${pair.target}. ONLY output the translation. Do not add any extra commentary, greetings, or explanations. Your response must be the direct translation of the user's speech. ${paceHint} ${chineseSimplifiedNote}`;
+      const chineseSimplifiedNote = 'When Chinese is involved, always use Simplified Chinese (简体中文).';
+      const systemInstruction = `You are an expert simultaneous interpreter. The user may speak either in ${pair.source} or ${pair.target}. If the input is in ${pair.source}, translate into ${pair.target}. If the input is in ${pair.target}, translate into ${pair.source}. ONLY output the translation in the other language, with no extra commentary or repetition. Respond in real-time. ${paceHint} ${chineseSimplifiedNote}`;
 
       const OutputContextCtor = window.AudioContext || (window as any).webkitAudioContext;
       const outputAudioContext = new OutputContextCtor({ sampleRate: 24000 });
@@ -437,12 +434,15 @@ const LiveTranslatorApp = () => {
               const translatedText = currentOutputTranscription.current.trim();
 
               if (sourceText || translatedText) {
+                const detection = detectLanguageOfText(sourceText, pair.source, pair.target);
+                const sourceLang = detection === 'A' ? pair.source : detection === 'B' ? pair.target : `${pair.source}/${pair.target}`;
+                const targetLang = detection === 'A' ? pair.target : detection === 'B' ? pair.source : `${pair.source}/${pair.target}`;
                 setTranscript((prev) => {
                   const nextEntry: TranscriptEntry = {
                     sourceText,
                     translatedText,
-                    sourceLang: pair.source,
-                    targetLang: pair.target,
+                    sourceLang,
+                    targetLang,
                     createdAt: Date.now(),
                   };
                   const nextTranscript = [...prev, nextEntry];
@@ -597,7 +597,7 @@ const LiveTranslatorApp = () => {
       ? 'Interpreter is live. Speak to translate instantly.'
       : status === 'connecting'
       ? 'Establishing a secure audio channel…'
-      : `Tap the microphone to interpret from ${selectedPair.source} to ${selectedPair.target}.`;
+      : `Tap the microphone for bidirectional interpreting between ${selectedPair.source} and ${selectedPair.target}.`;
 
   const micButtonClass = [
     'mic-button',
@@ -678,7 +678,7 @@ const LiveTranslatorApp = () => {
         <div className="language-chip">
           <span className="language-label">{selectedPair.source}</span>
           <span className="language-separator" aria-hidden="true">
-            →
+            ↔
           </span>
           <span className="language-label">{selectedPair.target}</span>
         </div>
@@ -712,7 +712,7 @@ const LiveTranslatorApp = () => {
             <p className="placeholder-title">No translations yet</p>
             <p className="placeholder-copy">
               {status === 'idle'
-                ? `Press the microphone to interpret from ${selectedPair.source} to ${selectedPair.target}.`
+                ? `Press the microphone for bidirectional interpreting between ${selectedPair.source} and ${selectedPair.target}.`
                 : 'We are ready—start speaking to see your translations appear here.'}
             </p>
           </div>
@@ -779,55 +779,20 @@ const LiveTranslatorApp = () => {
             <div className="setting-item">
               <label htmlFor="language-pair">Translate</label>
               <div className="pair-row">
-                {(() => {
-                  const canonicalIndex = (idx: number) => {
-                    const p = LANGUAGE_PAIRS[idx] ?? FALLBACK_PAIR;
-                    if (p.source === 'Chinese') return idx;
-                    if (p.source === 'English') {
-                      if (p.target === 'Chinese') {
-                        const rev = LANGUAGE_PAIRS.findIndex(
-                          (q) => q.source === 'Chinese' && q.target === 'English',
-                        );
-                        return rev !== -1 ? rev : idx;
-                      }
-                      return idx;
-                    }
-                    const rev = LANGUAGE_PAIRS.findIndex(
-                      (q) => q.source === p.target && q.target === p.source,
-                    );
-                    return rev !== -1 ? rev : idx;
-                  };
-                  const displayPairs = LANGUAGE_PAIRS.map((p, i) => ({ p, i }))
-                    .filter(({ p }) =>
-                      // Only show canonical directions, and avoid duplicate CN↔EN by hiding EN→CN in dropdown
-                      (p.source === 'Chinese' && p.target !== 'Chinese') ||
-                      (p.source === 'English' && p.target !== 'Chinese')
-                    );
-                  return (
-                    <select
-                      id="language-pair"
-                      value={canonicalIndex(selectedPairIndex)}
-                      onChange={(event) => handlePairChange(Number.parseInt(event.target.value, 10))}
-                    >
-                      {displayPairs.map(({ p, i }) => (
-                        <option key={p.name} value={i}>
-                          {p.name}
-                        </option>
-                      ))}
-                    </select>
-                  );
-                })()}
-                <button type="button" className="swap-button" onClick={swapPairDirection} aria-label="Swap direction">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="17 1 21 5 17 9" />
-                    <line x1="3" y1="5" x2="21" y2="5" />
-                    <polyline points="7 15 3 19 7 23" />
-                    <line x1="3" y1="19" x2="21" y2="19" />
-                  </svg>
-                </button>
+                <select
+                  id="language-pair"
+                  value={selectedPairIndex}
+                  onChange={(event) => handlePairChange(Number.parseInt(event.target.value, 10))}
+                >
+                  {LANGUAGE_PAIRS.map((p, i) => (
+                    <option key={p.name} value={i}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
                 <div className="pair-preview" aria-live="polite">
                   <span className="pair-badge">{selectedPair.source}</span>
-                  <span className="pair-arrow" aria-hidden="true">→</span>
+                  <span className="pair-arrow" aria-hidden="true">↔</span>
                   <span className="pair-badge">{selectedPair.target}</span>
                 </div>
               </div>
