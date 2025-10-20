@@ -826,7 +826,9 @@ const LiveTranslatorApp = () => {
                   </svg>
                 </button>
                 <div className="pair-preview" aria-live="polite">
-                  {selectedPair.source} → {selectedPair.target}
+                  <span className="pair-badge">{selectedPair.source}</span>
+                  <span className="pair-arrow" aria-hidden="true">→</span>
+                  <span className="pair-badge">{selectedPair.target}</span>
                 </div>
               </div>
             </div>
