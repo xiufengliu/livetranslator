@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Deploy script for Live Translator (static build served by Nginx)
+# Usage: ./deploy-livetranslator
+
+cd "$(dirname "$0")"
+
+echo "[deploy] Working directory: $(pwd)"
+
+if ! command -v npm >/dev/null 2>&1; then
+  echo "[deploy] Error: npm is not installed or not in PATH" >&2
+  exit 1
+fi
+
+if [[ -f .env.local ]]; then
+  echo "[deploy] Using .env.local for build-time variables"
+else
+  echo "[deploy] Warning: .env.local not found; build may miss GEMINI_API_KEY" >&2
+fi
+
+if [[ -f package-lock.json ]]; then
+  echo "[deploy] Installing dependencies via npm ci..."
+  npm ci --silent
+else
+  echo "[deploy] Installing dependencies via npm install..."
+  npm install --silent
+fi
+
+echo "[deploy] Building production assets..."
+npm run build
+
+if [[ ! -f dist/index.html ]]; then
+  echo "[deploy] Error: build did not produce dist/index.html" >&2
+  exit 1
+fi
+
+echo "[deploy] Build complete. A few output files:"
+ls -lh dist | sed -n '1,20p'
+
+echo "[deploy] Nginx is serving from dist/. If you changed Nginx config, run:"
+echo "        sudo nginx -t && sudo systemctl reload nginx"
+
+echo "[deploy] Done. Visit: https://live.scicloud.site"
+

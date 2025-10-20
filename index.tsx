@@ -80,7 +80,6 @@ const timeFormatter = new Intl.DateTimeFormat(undefined, {
 });
 const formatTimestamp = (value: number) => timeFormatter.format(value);
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
 const TRANSCRIPT_KEY = 'liveTranslatorTranscript';
 const LANGUAGE_PAIR_KEY = 'selectedPairIndex';
 
@@ -141,6 +140,27 @@ const LiveTranslatorApp = () => {
   const statusRef = useRef<'idle' | 'connecting' | 'listening'>('idle');
   const isMountedRef = useRef(true);
 
+  // Keep the screen awake while recording so the OS doesn't lock
+  const wakeLockRef = useRef<any>(null);
+  const requestWakeLock = useCallback(async () => {
+    try {
+      const anyNavigator: any = navigator as any;
+      if (anyNavigator?.wakeLock?.request) {
+        wakeLockRef.current = await anyNavigator.wakeLock.request('screen');
+      }
+    } catch (e) {
+      console.debug('Wake Lock not available or denied', e);
+    }
+  }, []);
+  const releaseWakeLock = useCallback(async () => {
+    try {
+      if (wakeLockRef.current?.release) {
+        await wakeLockRef.current.release();
+      }
+    } catch {}
+    wakeLockRef.current = null;
+  }, []);
+
   const currentInputTranscription = useRef('');
   const currentOutputTranscription = useRef('');
 
@@ -177,6 +197,17 @@ const LiveTranslatorApp = () => {
     };
   }, [isMaximized, isSettingsOpen]);
 
+  // Reacquire wake lock on visibility if still recording
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible' && isRecordingRef.current) {
+        requestWakeLock();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, [requestWakeLock]);
+
   const clearTranscript = useCallback(() => {
     setTranscript([]);
     try {
@@ -194,6 +225,9 @@ const LiveTranslatorApp = () => {
       if (!isRecordingRef.current && !sessionPromise && !activeSession) {
         return;
       }
+
+      // Release wake lock when stopping
+      releaseWakeLock();
 
       sessionPromiseRef.current = null;
       sessionRef.current = null;
@@ -330,6 +364,13 @@ const LiveTranslatorApp = () => {
       outputSourcesRef.current.clear();
       nextOutputStartTimeRef.current = 0;
 
+      const apiKey = (process.env.API_KEY as unknown as string) || '';
+      if (!apiKey) {
+        setError('Missing Gemini API key. Please configure GEMINI_API_KEY on the server and refresh.');
+        return;
+      }
+
+      const ai = new GoogleGenAI({ apiKey });
       sessionPromiseRef.current = ai.live.connect({
         model: 'gemini-2.5-flash-native-audio-preview-09-2025',
         callbacks: {
@@ -431,6 +472,9 @@ const LiveTranslatorApp = () => {
           outputAudioTranscription: {},
         },
       });
+
+      // Prevent screen sleep while actively recording
+      requestWakeLock();
 
       const session = await sessionPromiseRef.current;
       sessionRef.current = session;
