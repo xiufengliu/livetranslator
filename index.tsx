@@ -357,7 +357,13 @@ const LiveTranslatorApp = () => {
       }
 
       const pair = LANGUAGE_PAIRS[selectedPairIndex] ?? FALLBACK_PAIR;
-      const systemInstruction = `You are an expert simultaneous interpreter. The user will speak to you in ${pair.source}. Your task is to listen to the user and provide a real-time, accurate translation in ${pair.target}. ONLY output the translation. Do not add any extra commentary, greetings, or explanations. Your response must be the direct translation of the user's speech.`;
+      const paceHint =
+        (speechRateRef.current || 1) < 0.9
+          ? 'Speak slowly and clearly to aid comprehension.'
+          : (speechRateRef.current || 1) > 1.1
+          ? 'Speak a bit faster while remaining clear.'
+          : 'Use a natural speaking pace.';
+      const systemInstruction = `You are an expert simultaneous interpreter. The user will speak to you in ${pair.source}. Your task is to listen to the user and provide a real-time, accurate translation in ${pair.target}. ONLY output the translation. Do not add any extra commentary, greetings, or explanations. Your response must be the direct translation of the user's speech. ${paceHint}`;
 
       const OutputContextCtor = window.AudioContext || (window as any).webkitAudioContext;
       const outputAudioContext = new OutputContextCtor({ sampleRate: 24000 });
@@ -434,9 +440,6 @@ const LiveTranslatorApp = () => {
                   const source = outputCtx.createBufferSource();
                   source.buffer = buffer;
                   source.connect(outputNode);
-                  try {
-                    source.playbackRate.value = speechRateRef.current || 1.0;
-                  } catch (_) {}
 
                   const startAt = Math.max(nextOutputStartTimeRef.current, outputCtx.currentTime);
                   source.start(startAt);
